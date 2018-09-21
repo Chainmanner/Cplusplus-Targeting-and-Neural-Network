@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<opencv_storage>
+<hue_min>160</hue_min>
+<hue_max>180</hue_max>
+<sat_min>10</sat_min>
+<val_min>20</val_min>
+<cam_focal_length>4.15</cam_focal_length>
+<cam_image_sensor_width>8.0</cam_image_sensor_width>
+<target_width>29</target_width>
+<target_ground>26.0</target_ground>
+<target_camera_offset>0</target_camera_offset>
+<cam_matrix type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>d</dt>
+  <data>
+    0 0
+    0 0
+    0 0
+    0 0
+    1</data></cam_matrix>
+<cam_distortion_coeffs type_id="opencv-matrix">
+  <rows>1</rows>
+  <cols>5</cols>
+  <dt>d</dt>
+  <data>
+    0 0
+    0 0
+    0</data></cam_distortion_coeffs>
+<start_fast>0</start_fast>
+</opencv_storage>

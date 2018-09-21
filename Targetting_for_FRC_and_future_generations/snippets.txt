@@ -1,0 +1,157 @@
+!! TESTING NEURAL NETWORK FUNCTIONALITY !!
+	std::cout << NeuralNet::GetActivationFunc( 0 ) << std::endl;
+	std::cout << &NeuralNet::LogisticFunction << std::endl;
+
+	// This shit's way too slow on a USB.
+	/*std::fstream fs( "dude_STOP.txt", std::fstream::out | std::fstream::trunc | std::fstream::binary );
+	float fa = 0.23f;
+	fs.write( (const char*)&fa, sizeof(float) );
+	fs.close();
+
+	std::fstream fs2( "dude_STOP.txt", std::fstream::in | std::fstream::binary );
+	float fe;
+	fs2.read( (char*)&fe, sizeof(float) );
+	std::cout << fe << std::endl;
+	fs2.close();*/
+
+	neuron_t* n = new neuron_t;
+	n->Init();
+	delete n;
+	
+	bool bias = true;
+
+	layer_t* l1 = new layer_t;
+	l1->Init( bias, 1.0f );
+	for ( int i = 0; i < 2; i++ )
+	{
+		l1->AddNeuron( new neuron_t );
+	}
+	l1->InitNeurons( bias );
+	l1->fLambda = 0.0001f;
+	//l1->PrintValues();
+	//l1->InitNeuronConnections( 7 );
+
+	layer_t* l2 = new layer_t;
+	l2->Init( false );
+	for ( int i = 0; i < 3; i++ )
+	{
+		l2->AddNeuron( new neuron_t );
+	}
+	l2->InitNeurons( false );
+	//l2->PrintValues();
+
+	//NeuralNet* a = new NeuralNet( l1, nullptr, 0, l2, true );
+
+	// Now here's where the real fun begins.
+	layer_t** hidden = new layer_t*[1];
+
+	layer_t* h1 = new layer_t;
+	h1->Init( bias );
+	for ( int i = 0; i < 2; i++ )
+	{
+		h1->AddNeuron( new neuron_t );
+	}
+	h1->InitNeurons( bias );
+	h1->fLambda = 0.00025f;
+	//h1->PrintValues();
+	hidden[0] = h1;
+
+	layer_t* h2 = new layer_t;
+	h2->Init( bias );
+	for ( int i = 0; i < 2; i++ )
+	{
+		h2->AddNeuron( new neuron_t );
+	}
+	h2->InitNeurons( bias );
+	//h1->PrintValues();
+	//hidden[1] = h2;
+
+	NeuralNet* nn = NeuralNet::LoadNetFromFile( "savetest.txt" ); //new NeuralNet( l1, hidden, 1, l2, bias );
+	nn->FwdProp();
+
+	float fInputsOne[2] = { 0.0f, 0.0f };
+	float fOutputsOne[3] = { 0.0f, 0.0f, 0.0f, };
+	float fInputsTwo[2] = { 0.0f, 1.0f };
+	float fOutputsTwo[3] = { 0.0f, 1.0f, 1.0f };
+	float fInputsThree[2] = { 1.0f, 0.0f };
+	float fOutputsThree[3] = { 0.0f, 1.0f, 1.0f };
+	float fInputsFour[2] = { 1.0f, 1.0f };
+	float fOutputsFour[3] = { 1.0f, 1.0f, 0.0f };
+	trainingset_t** hTrainingData = new trainingset_t*[4];
+
+	hTrainingData[0] = new trainingset_t;
+	hTrainingData[0]->fInputs = fInputsOne;
+	hTrainingData[0]->fTargetOutputs = fOutputsOne;
+	hTrainingData[1] = new trainingset_t;
+	hTrainingData[1]->fInputs = fInputsTwo;
+	hTrainingData[1]->fTargetOutputs = fOutputsTwo;
+	hTrainingData[2] = new trainingset_t;
+	hTrainingData[2]->fInputs = fInputsThree;
+	hTrainingData[2]->fTargetOutputs = fOutputsThree;
+	hTrainingData[3] = new trainingset_t;
+	hTrainingData[3]->fInputs = fInputsFour;
+	hTrainingData[3]->fTargetOutputs = fOutputsFour;
+
+	//nn->Train( hTrainingData, 4, 50000, 0.1f, 0.9f );
+	l1 = nn->m_hInputLayer;
+	l2 = nn->m_hOutputLayer;
+	h1 = nn->m_hHiddenLayers[0];
+
+	l1->hNeurons[0+bias]->fVal = 0.0f;
+	l1->hNeurons[1+bias]->fVal = 0.0f;
+	nn->FwdProp();
+	l1->PrintValues();
+	h1->PrintValues();
+	//h2->PrintValues();
+	l2->PrintValues();
+	std::cout << "- - - - - - - - - - - - - - - - - - -\n";
+	l1->hNeurons[0+bias]->fVal = 1.0f;
+	l1->hNeurons[1+bias]->fVal = 0.0f;
+	nn->FwdProp();
+	l1->PrintValues();
+	h1->PrintValues();
+	//h2->PrintValues();
+	l2->PrintValues();
+	std::cout << "- - - - - - - - - - - - - - - - - - -\n";
+	l1->hNeurons[0+bias]->fVal = 0.0f;
+	l1->hNeurons[1+bias]->fVal = 1.0f;
+	nn->FwdProp();
+	l1->PrintValues();
+	h1->PrintValues();
+	//h2->PrintValues();
+	l2->PrintValues();
+	std::cout << "- - - - - - - - - - - - - - - - - - -\n";
+	l1->hNeurons[0+bias]->fVal = 1.0f;
+	l1->hNeurons[1+bias]->fVal = 1.0f;
+	nn->FwdProp();
+	l1->PrintValues();
+	h1->PrintValues();
+	//h2->PrintValues();
+	l2->PrintValues();
+	std::cout << "- - - - - - - - - - - - - - - - - - -\n";
+	std::system("PAUSE");
+
+	std::cout << "- - - - - - - - - - - - - - - - - - -\n";
+	for ( int i = 0; i < l1->iNeurons; i++ )
+	{
+		for ( int j = 0; j < h1->iNeurons; j++ )
+		{
+			std::cout << l1->hNeurons[i]->fWeights[j] << std::endl;
+		}
+		std::cout << "- - - - - - - - -\n";
+	}
+	std::cout << "- - - - - - - - - - - - - - - - - - -\n";
+	for ( int i = 0; i < h1->iNeurons; i++ )
+	{
+		for ( int j = 0; j < l2->iNeurons; j++ )
+		{
+			std::cout << h1->hNeurons[i]->fWeights[j] << std::endl;
+		}
+		std::cout << "- - - - - - - - -\n";
+	}
+	std::cout << "- - - - - - - - - - - - - - - - - - -\n";
+	std::cout << "- - - - - - - - - - - - - - - - - - -\n";
+
+	//nn->SaveNetToFile("savetest.txt");
+
+	delete nn;
